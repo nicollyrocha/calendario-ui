@@ -58,7 +58,7 @@ export default function ModalCreateEvent({
 					setLoading(false);
 					setError({
 						value: true,
-						message: res.response.data,
+						message: res.response.data.message,
 					});
 				}, 2000);
 			} else {
@@ -142,7 +142,7 @@ export default function ModalCreateEvent({
 					</DemoContainer>
 				</LocalizationProvider>
 			</DialogContent>
-			{error.value ? (
+			{error.value === true ? (
 				<Alert
 					className='flex items-center w-full'
 					icon={<ErrorOutlineIcon fontSize='inherit' />}

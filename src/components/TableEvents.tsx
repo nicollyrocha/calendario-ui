@@ -52,7 +52,7 @@ export default function TableEvents() {
 	});
 
 	return (
-		<Paper sx={{ overflow: 'hidden' }} className='mx-5'>
+		<Paper sx={{ overflow: 'hidden' }} className='mx-5 mt-5'>
 			<ModalDeleteEvent
 				id={idEvent}
 				openModalDelete={openModalDelete}
@@ -84,13 +84,54 @@ export default function TableEvents() {
 								const dateStart = row.dateStart ? FormatDate(row.dateStart) : '';
 								const dateEnd = row.dateEnd ? FormatDate(row.dateEnd) : '';
 								return (
-									<TableRow key={row.nameEvent}>
-										<TableCell align='left'>{row.nameEvent}</TableCell>
-										<TableCell align='left'>{row.description}</TableCell>
-										<TableCell align='left'>{dateStart}</TableCell>
-										<TableCell align='left'>{dateEnd}</TableCell>
+									<TableRow
+										key={row.nameEvent}
+										style={{
+											backgroundColor:
+												row.dateStart && row.dateStart < new Date() ? '#DCDCDC' : 'white',
+										}}
+									>
+										<TableCell
+											align='left'
+											style={{
+												color:
+													row.dateStart && row.dateStart < new Date() ? '#C0C0C0' : 'black',
+											}}
+										>
+											{row.nameEvent}
+										</TableCell>
+										<TableCell
+											style={{
+												color:
+													row.dateStart && row.dateStart < new Date() ? '#C0C0C0' : 'black',
+											}}
+											align='left'
+										>
+											{row.description}
+										</TableCell>
+										<TableCell
+											style={{
+												color:
+													row.dateStart && row.dateStart < new Date() ? '#C0C0C0' : 'black',
+											}}
+											align='left'
+										>
+											{dateStart}
+										</TableCell>
+										<TableCell
+											style={{
+												color:
+													row.dateStart && row.dateStart < new Date() ? '#C0C0C0' : 'black',
+											}}
+											align='left'
+										>
+											{dateEnd}
+										</TableCell>
 										<TableCell align='left'>
 											<IconButton
+												disabled={
+													row.dateStart && row.dateStart < new Date() ? true : false
+												}
 												onClick={() => (row.id ? handleClickDelete(row.id) : {})}
 												color='error'
 												aria-label='delete'
@@ -100,6 +141,9 @@ export default function TableEvents() {
 										</TableCell>
 										<TableCell align='left'>
 											<IconButton
+												disabled={
+													row.dateStart && row.dateStart < new Date() ? true : false
+												}
 												onClick={() => {
 													setEventData(row);
 													setIdEvent(row.id ? row.id : 0);

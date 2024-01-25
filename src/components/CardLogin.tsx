@@ -1,4 +1,4 @@
-import { Alert, Backdrop, Button } from '@mui/material';
+import { Alert, Backdrop, Button, Snackbar } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
 import { UsersService } from '../services/api/users/usersService';
@@ -15,36 +15,88 @@ export const CardLogin = () => {
 	});
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState({ value: false, message: '' });
+	const [errorCreateLogin, setErrorCreateLogin] = useState({
+		value: false,
+		message: '',
+	});
 
 	if (localStorage.getItem('logado') === 'true') {
 		window.open('/home', '_self');
 	}
 
 	const createUser = async () => {
-		UsersService.cadastrar(userData).then((res: any) => {
-			if (res) {
-				setCreate(false);
-			}
-		});
+		setLoading(true);
+		UsersService.cadastrar(userData)
+			.then((res: any) => {
+				if (res) {
+					if (res.status === 409) {
+						setTimeout(() => {
+							setLoading(false);
+						}, 1000);
+						setErrorCreateLogin({
+							value: true,
+							message: res.message,
+						});
+					} else {
+						setTimeout(() => {
+							setLoading(false);
+						}, 1000);
+						setCreate(false);
+					}
+				}
+			})
+			.catch((error) => {
+				setTimeout(() => {
+					setLoading(false);
+				}, 1000);
+				setErrorCreateLogin({
+					value: true,
+					message: error.response.body.message,
+				});
+			});
 	};
 
 	const login = async () => {
 		setLoading(true);
-		UsersService.login(userData.email, userData.password).then((res: any) => {
-			if (res) {
-				localStorage.setItem('id', JSON.stringify(res.body.user.id));
-				localStorage.setItem('logado', 'true');
-				setTimeout(() => {
-					setLoading(false);
-				}, 1000);
+		UsersService.login(userData.email, userData.password)
+			.then((res: any) => {
+				if (res) {
+					if (res.status === 401) {
+						setTimeout(() => {
+							setLoading(false);
+						}, 1000);
+						setErrorCreateLogin({
+							value: true,
+							message: res.response.data.message,
+						});
+					} else if (res.status === 201) {
+						localStorage.setItem('id', JSON.stringify(res.body.user.id));
+						localStorage.setItem('logado', 'true');
+						setTimeout(() => {
+							setLoading(false);
+						}, 1000);
 
-				window.open('/home', '_self');
-			} else {
+						window.open('/home', '_self');
+					} else {
+						setTimeout(() => {
+							setLoading(false);
+						}, 1000);
+						setErrorCreateLogin({
+							value: true,
+							message: res.response.data.message,
+						});
+					}
+				}
+			})
+			.catch((error: any) => {
 				setTimeout(() => {
 					setLoading(false);
 				}, 1000);
-			}
-		});
+				setErrorCreateLogin({
+					value: true,
+					message: error.message,
+				});
+			});
 	};
 
 	const isValidEmail = (email: string) => {
@@ -65,12 +117,30 @@ export const CardLogin = () => {
 
 	return (
 		<div className='w-8/12 flex rounded h-[458px]'>
+			{errorCreateLogin.value ? (
+				<Snackbar
+					open={errorCreateLogin.value}
+					onClose={() => setErrorCreateLogin({ value: false, message: '' })}
+				>
+					<Alert
+						onClose={() => setErrorCreateLogin({ value: false, message: '' })}
+						severity='error'
+						variant='filled'
+						sx={{ width: '100%' }}
+					>
+						{errorCreateLogin.message}
+					</Alert>
+				</Snackbar>
+			) : (
+				<></>
+			)}
 			<Backdrop
 				sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
 				open={loading}
 			>
 				<CircularProgress color='inherit' />
 			</Backdrop>
+
 			<div className='bg-blue-400 w-5/12 rounded-l-lg flex items-center justify-center flex-col gap-5'>
 				<div className='text-white font-bold text-2xl'>Bem vindo!</div>
 			</div>

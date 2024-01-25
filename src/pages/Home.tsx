@@ -26,11 +26,19 @@ export const Home = () => {
 				<CircularProgress color='inherit' />
 			</Backdrop>
 			<ModalCreateEvent openModal={openModal} setOpenModal={setOpenModal} />
-			<div className='flex items-center justify-end pr-5 pt-2 gap-2'>
-				<IconButton onClick={() => setOpenModal(true)} aria-label='add'>
+			<div className='flex items-center justify-end pr-5 py-2 gap-4 bg-blue-500'>
+				<IconButton
+					onClick={() => setOpenModal(true)}
+					style={{ backgroundColor: '#F8F8FF', color: '#3B82F6' }}
+					aria-label='add'
+				>
 					<AddIcon />
 				</IconButton>
-				<Button variant='outlined' onClick={() => onClickLogout()}>
+				<Button
+					style={{ backgroundColor: '#F8F8FF', color: '#3B82F6' }}
+					variant='contained'
+					onClick={() => onClickLogout()}
+				>
 					Logout
 				</Button>
 			</div>

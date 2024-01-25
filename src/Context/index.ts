@@ -32,7 +32,7 @@ export const Context = () => {
 		if (localStorage.getItem('id')) {
 			EventsService.getEventsFromUser(Number(localStorage.getItem('id'))).then(
 				(res) => {
-					if (res) {
+					if (res && res.status === 201) {
 						const eventsFormatted = res.body.events.map((event: Event) => {
 							event.dateEnd = new Date(
 								`${event?.dateEnd?.toLocaleString().substring(0, 10)} ${event?.dateEnd
@@ -49,6 +49,8 @@ export const Context = () => {
 							return event;
 						});
 						setEvents(eventsFormatted);
+					} else {
+						setEvents([]);
 					}
 				}
 			);

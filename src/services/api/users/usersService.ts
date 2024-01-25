@@ -13,7 +13,6 @@ const cadastrar = async (userData: User) => {
 const login = async (email: string, password: string) => {
 	try {
 		const { data } = await api.post('/login', { email, password });
-		console.log(data);
 		return data;
 	} catch (error) {
 		return error;
